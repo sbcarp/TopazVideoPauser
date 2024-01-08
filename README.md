@@ -22,6 +22,9 @@ Welcome to file bug report in [issue page](https://github.com/sbcarp/TopazVideoP
 ### Why it doesn't shutdown my computer immediately after tasks are completed?
 After tasks are compeleted, there is a 60 seconds delay before it shuts down. This delay is designed to avoid unexpected shutdowns in cases where additional tasks might be pending after the completion of the initial task. Moreover, this delay provides users with an opportunity to cancel the shutdown if needed.
 
+### Why pause and resume doesn't work?
+Pause or reumse action is limited to be ran once per 3 seconds, to avoid stability issue, if the icon doesn't change when you double click on it, wait for few seconds and try it again. If that's not the case, feel free to file bug report.
+
 ### Why it app is so large?
 The app has .net runtime bundled, so you don't need to install it separately. The app itself is lightweight, consumes almost 0% CPU and 50mb memory while running.
 
