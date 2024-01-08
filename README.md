@@ -25,7 +25,7 @@ After tasks are compeleted, there is a 60 seconds delay before it shuts down. Th
 ### Why pause and resume doesn't work?
 Pause or reumse action is limited to be ran once per 3 seconds, to avoid stability issue, if the icon doesn't change when you double click on it, wait for few seconds and try it again. If that's not the case, feel free to file bug report.
 
-### Why it app is so large?
+### Why the app is so large?
 The app has .net runtime bundled, so you don't need to install it separately. The app itself is lightweight, consumes almost 0% CPU and 50mb memory while running.
 
 ## Limitations
