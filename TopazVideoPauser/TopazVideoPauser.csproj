@@ -11,6 +11,7 @@
     <PublishReadyToRun>true</PublishReadyToRun>
     <PublishSingleFile>true</PublishSingleFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
