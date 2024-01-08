@@ -145,7 +145,7 @@ namespace TopazVideoPauser
 				{
 					ChangeStatus(ProcessGroupStatus.Idle);
 				}
-				else if (areTopazProcessesSuspended || areFfmpegProcessesSuspended)
+				else if (areFfmpegProcessesSuspended)
 				{
 					ChangeStatus(ProcessGroupStatus.Suspended);
 				}

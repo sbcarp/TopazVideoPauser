@@ -16,11 +16,15 @@ namespace TopazVideoPauser
 
 		public static bool Suspend(this Process process)
 		{
+			if (process.HasExited) return false;
+			if (process.IsSuspended()) return true;
 			return NtSuspendProcess(process.Handle) == 0;
 		}
 
 		public static bool Resume(this Process process)
 		{
+			if (process.HasExited) return false;
+			if (!process.IsSuspended()) return true;
 			return NtResumeProcess(process.Handle) == 0;
 		}
 
