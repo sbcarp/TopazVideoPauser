@@ -3,6 +3,7 @@
 Enables one-click pausing and resuming of Topaz Video tasks, also features functionality to schedule OS shutdown or sleep once the tasks are completed.
 
 ## Screenshots
+![App Introduction](app_intro.png?raw=true "App Introduction")
 
 ## How to install?
 1. Download the app file from [release page](https://github.com/sbcarp/TopazVideoPauser/releases/)
