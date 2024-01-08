@@ -26,3 +26,10 @@ After tasks are compeleted, there is a 60 seconds delay before it shuts down. Th
 1. This is a Windows only app, and there's no plan for macOS support
 2. It doesn't have fine control for individual task or window, if you have multiple Topaz Video Ai windows opened, it will pause all Topaz Video Ai windows.
 3. The feature `Shutdown or sleep when tasks finished` doesn't work well for very short tasks (the tasks can be completed within few seconds)
+
+## Credits
+[Icon by Creative Squad](https://www.freepik.com/icon/play_11081629#fromView=search&term=pause&track=ais&page=1&position=47&uuid=6faf0780-3bf4-40ca-9d00-ee690853b7bc)
+[Icon by Creative Squad](https://www.freepik.com/icon/lock_11081621#fromView=resource_detail&position=9)
+[Icon by Creative Squad](https://www.freepik.com/icon/lines_11081623#fromView=resource_detail&position=8)
+[Icon by Creative Squad](https://www.freepik.com/icon/lock_11081619#fromView=resource_detail&position=10)
+[Icon by riajulislam](https://www.freepik.com/icon/shutdown_3541892#fromView=search&term=shutdown&track=ais&page=1&position=69&uuid=dfcdb1dd-2377-493a-80c3-68c4465518f2)
