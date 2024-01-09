@@ -19,6 +19,9 @@ Enables one-click pausing and resuming of Topaz Video tasks, also features funct
 Welcome to file bug report in [issue page](https://github.com/sbcarp/TopazVideoPauser/issues)
 
 ## FAQ
+### Try to run it but nothing happens?
+It may require administrator privileges to run, try right click on it and select "Run as administrator"
+
 ### Why it doesn't shutdown my computer immediately after tasks are completed?
 After tasks are compeleted, there is a 60 seconds delay before it shuts down. This delay is designed to avoid unexpected shutdowns in cases where additional tasks might be pending after the completion of the initial task. Moreover, this delay provides users with an opportunity to cancel the shutdown if needed.
 
