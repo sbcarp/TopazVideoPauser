@@ -37,8 +37,9 @@ namespace TopazVideoPauser
 									CheckOnClick = true,
 									Tag = TasksFinishedAction.DoNothing
 								},
+								new ToolStripMenuItem("Shutdown", null, WhenTasksFinishedOption_Clicked){ CheckOnClick = true, Tag = TasksFinishedAction.Shutdown},
 								new ToolStripMenuItem("Sleep", null, WhenTasksFinishedOption_Clicked) { CheckOnClick = true, Tag = TasksFinishedAction.Sleep},
-								new ToolStripMenuItem("Shutdown", null, WhenTasksFinishedOption_Clicked){ CheckOnClick = true, Tag = TasksFinishedAction.Shutdown}
+								new ToolStripMenuItem("Hibernate", null, WhenTasksFinishedOption_Clicked) { CheckOnClick = true, Tag = TasksFinishedAction.Hibernate},
 							}
 			};
 			trayIcon = new NotifyIcon()

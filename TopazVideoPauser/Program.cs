@@ -31,6 +31,7 @@ namespace TopazVideoPauser
 		{
 			DoNothing,
 			Sleep,
+			Hibernate,
 			Shutdown
 		}
 		private TasksFinishedAction taskFinishedAction = TasksFinishedAction.DoNothing;
@@ -109,6 +110,10 @@ namespace TopazVideoPauser
 			{
 				Application.SetSuspendState(PowerState.Suspend, true, false);
 
+			}
+			else if (previousTasksFinishedAction == TasksFinishedAction.Hibernate)
+			{
+				Application.SetSuspendState(PowerState.Hibernate, true, false);
 			}
 			else if (previousTasksFinishedAction == TasksFinishedAction.Shutdown)
 			{
