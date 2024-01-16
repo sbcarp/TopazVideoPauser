@@ -32,6 +32,9 @@ Pause or reumse action is limited to be ran once per 3 seconds, to avoid stabili
 ### Try to run it but nothing happens?
 It may require administrator privileges to run, try right click on it and select "Run as administrator"
 
+### What is automatic mode?
+When automatic mode is enabled, it will automatically controls tasks based on current usage pattern, it dynamically adjusts task performance based on three key states of user activity: Fullscreen, User Activity, and Idle.
+
 ### What are Fullscreen, User Activity, and Idle in automatic mode?
 Fullscreen: This refers to when an application is running in a mode that occupies the entire screen, without showing the desktop or other windows. Common examples include playing a video game or watching a video in fullscreen mode.
 
