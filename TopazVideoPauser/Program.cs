@@ -25,8 +25,12 @@ namespace TopazVideoPauser
 
 	public class AppContext : ApplicationContext
 	{
+		private readonly AppConfig appConfig = Task.Run(async () => await AppConfig.LoadAsync()).Result;
 		private readonly ProcessGroupManager processGroupManager = new();
-		private readonly TrayMenuManager trayMenuManager = new();
+		private readonly TrayMenuManager trayMenuManager;
+		private readonly FullScreenDetector fullScreenDetector;
+		private readonly IdleDetector idleDetector = new(30000);
+		private readonly ModeManager modeManager;
 		public enum TasksFinishedAction
 		{
 			DoNothing,
@@ -34,36 +38,35 @@ namespace TopazVideoPauser
 			Hibernate,
 			Shutdown
 		}
+		
 		private TasksFinishedAction taskFinishedAction = TasksFinishedAction.DoNothing;
 		private readonly System.Timers.Timer taskTimer = new(TimeSpan.FromMinutes(1)) { AutoReset = false };
 
 		public AppContext()
 		{
+			trayMenuManager = new(appConfig);
+			fullScreenDetector = new(trayMenuManager.TrayHandle);
+			trayMenuManager.OnTrayHandleCreated += (s, e) => {
+				if (trayMenuManager.TrayHandle != null)
+				{
+					fullScreenDetector.UpdateHandle((nint)trayMenuManager.TrayHandle);
+				}
+			};
 			processGroupManager.ProcessGroupStatusChanged += ProcessGroupManager_ProcessGroupStatusChanged;
+			modeManager = new ModeManager(appConfig, processGroupManager, idleDetector, fullScreenDetector);
+			
 			RefreshProcessGroupStatus();
 
-			trayMenuManager.OnTrayIconDoubleClicked += TrayMenuManager_OnTrayIconDoubleClicked;
+			trayMenuManager.OnTrayIconDoubleClicked += async (s, e) => await modeManager.TogglePauseResumeStateAsync(true);
 			trayMenuManager.OnStartOnSystemStartsClicked += TrayMenuManager_OnStartOnSystemStartsClicked;
-			trayMenuManager.OnPauseClicked += TrayMenuManager_OnPauseClicked;
-			trayMenuManager.OnResumeClicked += TrayMenuManager_OnResumeClicked;
+			trayMenuManager.OnLimitCPUClicked += async (s, e) => await modeManager.LimitCpuAsync(e);
+			trayMenuManager.OnPauseClicked += async (s, e) => await modeManager.PauseAsync(true);
+			trayMenuManager.OnResumeClicked += async (s, e) => await modeManager.ResumeAsync(true);
 			trayMenuManager.OnExitClicked += TrayMenuManager_OnExitClicked;
 			trayMenuManager.OnTaskFinishedOptionClicked += TrayMenuManager_OnTaskFinishedOptionClicked;
 			taskTimer.Elapsed += TaskTimer_Elapsed;
 
 			trayMenuManager.UpdateStartOnSystemStartsOption(ReadStartUpStatus());
-		}
-
-		private void TrayMenuManager_OnTrayIconDoubleClicked(object? sender, EventArgs e)
-		{
-			var status = processGroupManager.ProcessGroupStatus;
-			if (status == ProcessGroupStatus.Running)
-			{
-				processGroupManager.Suspend();
-			}
-			else if (status == ProcessGroupStatus.Suspended)
-			{
-				processGroupManager.Resume();
-			}
 		}
 		private void TrayMenuManager_OnStartOnSystemStartsClicked(object? sender, EventArgs e)
 		{
@@ -74,19 +77,11 @@ namespace TopazVideoPauser
 			}
 		}
 
-		private void TrayMenuManager_OnPauseClicked(object? sender, EventArgs e)
-		{
-			processGroupManager.Suspend();
-		}
-
-		private void TrayMenuManager_OnResumeClicked(object? sender, EventArgs e)
-		{
-			processGroupManager.Resume();
-		}
-
 		private void TrayMenuManager_OnExitClicked(object? sender, EventArgs e)
 		{
 			processGroupManager.Dispose();
+			fullScreenDetector.Dispose();
+			idleDetector.Dispose();
 			trayMenuManager.Dispose();
 			Application.Exit();
 		}
@@ -122,7 +117,7 @@ namespace TopazVideoPauser
 		}
 		private void RefreshProcessGroupStatus()
 		{
-			ProcessGroupManager_ProcessGroupStatusChanged(null, new(processGroupManager.ProcessGroupStatus, processGroupManager.ProcessGroupStatus));
+			ProcessGroupManager_ProcessGroupStatusChanged(null, new(processGroupManager.ProcessGroupStatus, processGroupManager.ProcessGroupStatus, processGroupManager.GetAverageCpuCoresUsed()));
 		}
 		private void ProcessGroupManager_ProcessGroupStatusChanged(object? sender, ProcessGroupStatusChangedEventArgs e)
 		{
@@ -136,9 +131,9 @@ namespace TopazVideoPauser
 			{
 				taskTimer.Stop();
 			}
-			UpdateMenuItemsVisibility(e.Status, isTaskTimerStarted);
+			UpdateMenuItemsVisibility(e.Status, isTaskTimerStarted, e.AverageCoresUsed);
 		}
-		private void UpdateMenuItemsVisibility(ProcessGroupStatus status, bool isTaskTimerStarted)
+		private void UpdateMenuItemsVisibility(ProcessGroupStatus status, bool isTaskTimerStarted, int averageCoresUsed)
 		{
 			try
 			{
@@ -151,7 +146,7 @@ namespace TopazVideoPauser
 				};
 
 				icon = isTaskTimerStarted ? Resources.shutdown : icon;
-				trayMenuManager.UpdateMenuItemsVisibility(icon, pauseVisible, resumeVisible);
+				trayMenuManager.UpdateMenuItemsVisibility(icon, pauseVisible, resumeVisible, averageCoresUsed);
 			}
 			catch (Exception ex)
 			{
