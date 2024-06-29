@@ -26,16 +26,16 @@ namespace TopazVideoPauser
 	}
 	internal class ProcessGroupManager: IDisposable
 	{
-		private static readonly string topazProcessName = "Topaz Video AI";
-		private static readonly string ffmpegProcessName = "ffmpeg";
+		private static readonly string[] topazProcessNames = ["Topaz Video AI", "Topaz Video Enhance AI"];
+		private static readonly string[] ffmpegProcessNames = ["ffmpeg"];
 		private static readonly string processExtensionName = ".exe";
 		private readonly Dictionary<int, Process> topazProcesses = [];
 		private readonly Dictionary<int, Process> ffmpegProcesses = [];
 		private readonly Debouncer<bool> processSuspendDebouncer = new(TimeSpan.FromSeconds(3), true, true);
 		private readonly Debouncer<bool> processAffinityDebouncer = new(TimeSpan.FromSeconds(3), true, true);
-		private readonly ProcessWatcher topazProcessWatcher = new (topazProcessName + processExtensionName);
-		private readonly ProcessWatcher ffmpegProcessWatcher = new (ffmpegProcessName + processExtensionName);
-		private readonly object refreshStatusLock = new();
+		private readonly ProcessWatcher topazProcessWatcher = new (topazProcessNames.Select((pn) => pn + processExtensionName));
+		private readonly ProcessWatcher ffmpegProcessWatcher = new(ffmpegProcessNames.Select((pn) => pn + processExtensionName));
+        private readonly object refreshStatusLock = new();
 		public ProcessGroupStatus ProcessGroupStatus { get; private set; } = ProcessGroupStatus.Unset;
 		public int AverageCoresUsed { get; private set; } = 0;
 		public event EventHandler<ProcessGroupStatusChangedEventArgs>? ProcessGroupStatusChanged;
@@ -47,9 +47,9 @@ namespace TopazVideoPauser
 			ffmpegProcessWatcher.OnProcessSpawned += FfmpegProcessWatcher_OnProcessSpawned;
 			ffmpegProcessWatcher.OnProcessExited += FfmpegProcessWatcher_OnProcessExited;
 
-			topazProcesses = GetProcessesByName(topazProcessName).ToDictionary(p => p.Id);
+			topazProcesses = GetProcessesByNames(topazProcessNames).ToDictionary(p => p.Id);
 			topazProcessWatcher.WatchProcess(topazProcesses.Values);
-			ffmpegProcesses = GetProcessesByName(ffmpegProcessName).Where(p =>
+			ffmpegProcesses = GetProcessesByNames(ffmpegProcessNames).Where(p =>
 			{
 				var parentId = p.GetParentProcessId();
 				return topazProcesses.Values.Any(tp => tp.Id == parentId);
@@ -155,7 +155,7 @@ namespace TopazVideoPauser
 					}
 					try
 					{
-						var allProcesses = topazProcesses.Values.Concat(ffmpegProcesses.Values);
+						var allProcesses = ffmpegProcesses.Values.Concat(topazProcesses.Values);
 						var result = suspend ? allProcesses.Suspend() : allProcesses.Resume();
 						Debug.WriteLine($"suspend {suspend}, result {result}");
 						return result;
@@ -237,12 +237,13 @@ namespace TopazVideoPauser
 		}
 
 
-		private static IEnumerable<Process> GetProcessesByName(string name)
+		private static IEnumerable<Process> GetProcessesByNames(string[] names)
 		{
 			try
 			{
-				var processes = Process.GetProcessesByName(name);
-				if (processes != null) return [.. processes];
+				
+				var processes = names.SelectMany(Process.GetProcessesByName).ToList();
+                if (processes != null) return [.. processes];
 				return [];
 			}
 			catch (Exception)
