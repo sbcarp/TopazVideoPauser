@@ -59,3 +59,4 @@ The app has .net runtime bundled, so you don't need to install it separately. Th
 [Icon by Creative Squad](https://www.freepik.com/icon/lines_11081623#fromView=resource_detail&position=8)
 [Icon by Creative Squad](https://www.freepik.com/icon/lock_11081619#fromView=resource_detail&position=10)
 [Icon by riajulislam](https://www.freepik.com/icon/shutdown_3541892#fromView=search&term=shutdown&track=ais&page=1&position=69&uuid=dfcdb1dd-2377-493a-80c3-68c4465518f2)
+[Icon by Pixel Bazaar](https://www.iconfinder.com/icons/11618327/circle_geometry_dot_stroke_icon)
