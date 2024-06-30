@@ -27,7 +27,7 @@ namespace TopazVideoPauser
 	internal class ProcessGroupManager: IDisposable
 	{
 		private static readonly string[] topazProcessNames = ["Topaz Video AI", "Topaz Video Enhance AI"];
-		private static readonly string[] ffmpegProcessNames = ["ffmpeg"];
+		private static readonly string[] ffmpegProcessNames = ["ffmpeg", "Topaz Video Enhance AI"];
 		private static readonly string processExtensionName = ".exe";
 		private readonly Dictionary<int, Process> topazProcesses = [];
 		private readonly Dictionary<int, Process> ffmpegProcesses = [];
@@ -52,7 +52,7 @@ namespace TopazVideoPauser
 			ffmpegProcesses = GetProcessesByNames(ffmpegProcessNames).Where(p =>
 			{
 				var parentId = p.GetParentProcessId();
-				return topazProcesses.Values.Any(tp => tp.Id == parentId);
+				return topazProcesses.Values.Any(tp => tp.Id == parentId) || topazProcessNames.Contains(p.ProcessName);
 			}).ToDictionary(p => p.Id);
 			ffmpegProcessWatcher.WatchProcess(ffmpegProcesses.Values);
 
