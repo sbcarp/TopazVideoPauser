@@ -64,7 +64,7 @@ namespace TopazVideoPauser
 			if (process == null) return;
 
 			var parentProcessId = process.GetParentProcessId();
-			if (topazProcesses.ContainsKey(parentProcessId))
+			if (topazProcesses.ContainsKey(parentProcessId) || topazProcessNames.Contains(process.ProcessName))
 			{
 				Debug.WriteLine($"OnProcessSpawned {processId}");
 				ffmpegProcesses.Add(processId, process);
