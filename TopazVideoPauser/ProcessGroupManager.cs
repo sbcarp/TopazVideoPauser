@@ -26,7 +26,7 @@ namespace TopazVideoPauser
 	}
 	internal class ProcessGroupManager: IDisposable
 	{
-		private static readonly string[] topazProcessNames = ["Topaz Video AI", "Topaz Video Enhance AI"];
+		private static readonly string[] topazProcessNames = ["Topaz Video AI", "Topaz Video Enhance AI", "runner"];
 		private static readonly string[] ffmpegProcessNames = ["ffmpeg", "Topaz Video Enhance AI"];
 		private static readonly string processExtensionName = ".exe";
 		private readonly Dictionary<int, Process> topazProcesses = [];
